@@ -17,6 +17,7 @@ from gerrit.error import (
     AlreadyExists,
 )
 from gerrit.projects.project import Project
+from gerrit.groups.group import Group
 
 
 class Gerrit(object):
@@ -177,3 +178,63 @@ class Gerrit(object):
         """
 
         return Project(self, name)
+
+    def create_group(self, name, options=None):
+        """
+        Create a group
+        :param name: Name of the group
+        :type name: str
+        :param options: Additonal options
+        :type options: dict
+
+        :return: Group object if successful
+        :rtype gerrit.Group
+        :exception: AlreadyExists, UnhandledError
+        """
+
+        return Groups.create_group(self, name, options)
+
+    def get_group(self, name):
+        """
+        Get a group
+        :param name: Group name to get
+        :type name: str
+
+        :return Group object if successful
+        :rtype gerrit.Group
+        :exception
+        """
+
+        return Groups(self, name)
+
+#    def has_include_group(self, group_name, included_group):
+#        """
+#        Check if included_group is included in group
+#        :param group_name: name of group to check for member
+#        :type group_name: str
+#        :param included_group: name of group to find
+#        :type included_group: str
+#        """
+#        group_data = self.get_group(group_name, ['id'])
+#        if not group_data:
+#            return None
+#
+#        group_id = group_data.get('id')
+#        included_group_encode = urllib.parse.quote_plus(included_group)
+#
+#        r_endpoint = '/a/groups/%s/groups/%s' % (
+#            group_id, included_group_encode)
+#
+#        req = self._gerrit_con.call(request='get',
+#                                    r_endpoint=r_endpoint,
+#                                   )
+#
+#        status_code = req.status_code
+#        result = req.content.decode('utf-8')
+#
+#        if status_code == 404:
+#            return False
+#        elif status_code != 200:
+#            raise UnhandledError(result)
+#
+#        return True
